@@ -1,0 +1,14 @@
+<launch>
+
+<param name="use_sim_time" value="false" />
+
+<node name="republish" type="republish" pkg="image_transport" output="screen" args="compressedDepth in:=/camera/depth/image_raw
+ raw out:=/camera/depth/image_raw"/>
+
+<node name="republish_rect" type="republish" pkg="image_transport" output="screen" args="compressedDepth in:=/camera/depth/image_rect
+ raw out:=/camera/depth/image_rect" />
+
+
+
+
+</launch>
