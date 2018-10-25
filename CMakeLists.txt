@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   rosbag
   message_filters
+  geometry_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -111,7 +112,7 @@ find_package( OpenCV REQUIRED )
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES parse_rosbag
-  CATKIN_DEPENDS cv_bridge image_transport roscpp sensor_msgs std_msgs rosbag message_filters
+  CATKIN_DEPENDS cv_bridge image_transport roscpp sensor_msgs std_msgs rosbag message_filters geometry_msgs
   DEPENDS system_lib OpenCV
 )
 
@@ -142,6 +143,7 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
  add_executable(${PROJECT_NAME}_node src/parse_rosbag_node.cpp)
+ add_executable(${PROJECT_NAME}_transforms_node src/parse_rosbag_transforms_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -152,12 +154,18 @@ include_directories(
 ## Add cmake target dependencies of the executable
 ## same as for the library above
  add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+ add_dependencies(${PROJECT_NAME}_transforms_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
  target_link_libraries(${PROJECT_NAME}_node
    ${catkin_LIBRARIES}
    ${OpenCV_LIBS}
  )
+
+target_link_libraries(${PROJECT_NAME}_transforms_node
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBS}
+  )
 
 #############
 ## Install ##
