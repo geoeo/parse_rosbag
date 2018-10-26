@@ -34,7 +34,7 @@ bool DEBUG = false;
 
 const std::string rosbag_dir = "/home/marc/Workspace/Rosbag";
 const std::string measurement_folder = "rccar_26_09_18";
-const std::string rosbag_filename = "marc_1_full";
+const std::string rosbag_filename = "marc_6_full";
 const std::string color_dir = "color";
 const std::string color_rect_dir = "color_rect";
 const std::string depth_dir = "depth";

@@ -13,15 +13,19 @@ int main(int argc, char** argv)
   const char * rosbag_file_dir_c_str = rosbag_file_dir_str.c_str();
 
   rosbag_file_path << rosbag_file_dir_str << '.' << rosbag_ext;
-
   string rosbag_file_path_str = rosbag_file_path.str();
 
-  rosbag_groundtruth_dir << rosbag_file_dir_str << "/" << gt_dir;
+  rosbag_groundtruth_dir << rosbag_file_dir_str;
   auto rosbag_groundtruth_dir_str = rosbag_groundtruth_dir.str();
-  auto rosbag_groundtruth_dir_c_str = rosbag_groundtruth_dir_str.c_str();
 
-  rosbag_groundtruth_file_path << rosbag_groundtruth_dir_str << "/" << gt_dir << "." << text_ext;
+  rosbag_groundtruth_file_path << rosbag_groundtruth_dir_str << "/" << gt_file << "." << text_ext;
   auto rosbag_groundtruth_file_path_str = rosbag_groundtruth_file_path.str();
+
+  rosbag_encoder_dir << rosbag_file_dir_str;
+  auto rosbag_encoder_dir_str = rosbag_encoder_dir.str();
+
+  rosbag_encoder_file_path << rosbag_encoder_dir_str << "/" << encoder_file << "." << text_ext;
+  auto rosbag_encoder_file_path_str = rosbag_encoder_file_path.str();
 
 
   // check if directory exists already
@@ -33,15 +37,9 @@ int main(int argc, char** argv)
     }
   }
 
-  if (!(stat(rosbag_groundtruth_dir_c_str, &sb) == 0 && S_ISDIR(sb.st_mode))){
-    const int dir_err = mkdir(rosbag_groundtruth_dir_c_str, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-    if (-1 == dir_err){
-      printf("Error creating directory!n");
-      return 1;
-    }
-  }
 
   groundtruth_filestream.open(rosbag_groundtruth_file_path_str);
+  encoder_filestream.open(rosbag_encoder_file_path_str);
 
 
 
@@ -50,6 +48,7 @@ int main(int argc, char** argv)
   bag.open(rosbag_file_path_str, rosbag::bagmode::Read);
 
   topics.push_back(rccar_pose_topic);
+  topics.push_back(encoder_topic);
 
   rosbag::View view(bag, rosbag::TopicQuery(topics));
 
@@ -83,17 +82,42 @@ int main(int argc, char** argv)
       auto measurementString = measurementSS.str();
 
       if(DEBUG){
-        //cout << timeString << "\n";
-        //cout << positionString << "\n";
-        //cout << quaternionString << "\n";
         cout << measurementString << "\n";
       }
+
+      groundtruth_filestream << measurementString << "\n";
+
+    }
+
+    if (topic == encoder_topic || ("/" + topic == encoder_topic))
+    {
+      tuw_nav_msgs::JointsIWS::ConstPtr iwsPtr = m.instantiate<tuw_nav_msgs::JointsIWS>();
+      if(iwsPtr == NULL)
+        continue;
+      auto ts = iwsPtr->header.stamp;
+      auto rev = iwsPtr->revolute[1];
+      auto steering = iwsPtr->steering[0];
+
+      stringstream timeSS;
+      timeSS << ts.sec << "." << ts.nsec;
+      auto timeString = timeSS.str();
+
+      stringstream encoderSS;
+      encoderSS << timeString << " " << rev << " " << " " << steering;
+      auto encoderString = encoderSS.str();
+
+      if(DEBUG){
+        cout << encoderString << "\n";
+      }
+
+      encoder_filestream << encoderString << "\n";
 
     }
 
   }
 
 
+  encoder_filestream.close();
   groundtruth_filestream.close();
   bag.close();
   return 0;
