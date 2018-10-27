@@ -25,7 +25,7 @@ bool DEBUG = false;
 
 const std::string rosbag_dir = "/home/marc/Workspace/Rosbag";
 const std::string measurement_folder = "rccar_26_09_18";
-const std::string rosbag_filename = "marc_1_full";
+const std::string rosbag_filename = "marc_6_full";
 const std::string gt_file = "groundtruth";
 const std::string encoder_file = "encoder";
 const std::string rosbag_ext = "bag";

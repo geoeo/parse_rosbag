@@ -177,7 +177,7 @@ int main(int argc, char** argv)
           time << 0.0;
         };
         time << nanosec_string;
-        image_name << rosbag_color_dir_str << "/" << time.str() << "." << img_ext;
+        image_name << rosbag_color_rect_dir_str << "/" << time.str() << "." << img_ext;
 
         auto image_name_str = image_name.str();
 
@@ -214,7 +214,7 @@ int main(int argc, char** argv)
           time << 0.0;
         };
         time << nanosec_string;
-        image_name << rosbag_color_dir_str << "/" << time.str() << "." << img_ext;
+        image_name << rosbag_depth_dir_str << "/" << time.str() << "." << img_ext;
         auto image_name_str = image_name.str();
 
         cv::imwrite(image_name_str,view,compression_params);
@@ -251,7 +251,7 @@ int main(int argc, char** argv)
           time << 0.0;
         };
         time << nanosec_string;
-        image_name << rosbag_color_dir_str << "/" << time.str() << "." << img_ext;
+        image_name << rosbag_depth_rect_dir_str << "/" << time.str() << "." << img_ext;
         auto image_name_str = image_name.str();
 
         cv::imwrite(image_name_str,view,compression_params);
