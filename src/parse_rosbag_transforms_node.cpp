@@ -72,8 +72,13 @@ int main(int argc, char** argv)
 
 
       stringstream time;
+      stringstream seconds;
       stringstream nanosec;
-      time << ts.sec << ".";
+
+      seconds << ts.sec;
+      auto seconds_string = seconds.str().erase(0,4);
+
+      time << seconds_string << ".";
       nanosec << ts.nsec;
       auto nanosec_string = nanosec.str();
       auto nanosec_length = (int)nanosec_string.length();
@@ -115,8 +120,13 @@ int main(int argc, char** argv)
       auto steering = iwsPtr->steering[0];
 
       stringstream time;
+      stringstream seconds;
       stringstream nanosec;
-      time << ts.sec << ".";
+
+      seconds << ts.sec;
+      auto seconds_string = seconds.str().erase(0,4);
+
+      time << seconds_string << ".";
       nanosec << ts.nsec;
       auto nanosec_string = nanosec.str();
       auto nanosec_length = (int)nanosec_string.length();
