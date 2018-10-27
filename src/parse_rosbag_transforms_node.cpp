@@ -67,14 +67,30 @@ int main(int argc, char** argv)
       auto pose = posePtr->pose;
       auto position = pose.position;
       auto quat = pose.orientation;
-      stringstream timeSS;
+
+
+
+
+      stringstream time;
+      stringstream nanosec;
+      time << ts.sec << ".";
+      nanosec << ts.nsec;
+      auto nanosec_string = nanosec.str();
+      auto nanosec_length = (int)nanosec_string.length();
+      auto nanosec_diff = nano_sec_digits - nanosec_length;
+      while (nanosec_diff-- > 0){
+        time << 0.0;
+      };
+      time << nanosec_string;
+
       stringstream positionSS;
       stringstream quaternionSS;
       stringstream measurementSS;
-      timeSS << ts.sec << "." << ts.nsec;
+
       positionSS << position.x << " " << position.y << " " << position.z;
       quaternionSS << quat.x << " " << quat.y << " " << quat.z << " " << quat.w;
-      auto timeString = timeSS.str();
+
+      auto timeString = time.str();
       auto positionString = positionSS.str();
       auto quaternionString = quaternionSS.str();
 
@@ -98,12 +114,20 @@ int main(int argc, char** argv)
       auto rev = iwsPtr->revolute[1];
       auto steering = iwsPtr->steering[0];
 
-      stringstream timeSS;
-      timeSS << ts.sec << "." << ts.nsec;
-      auto timeString = timeSS.str();
+      stringstream time;
+      stringstream nanosec;
+      time << ts.sec << ".";
+      nanosec << ts.nsec;
+      auto nanosec_string = nanosec.str();
+      auto nanosec_length = (int)nanosec_string.length();
+      auto nanosec_diff = nano_sec_digits - nanosec_length;
+      while (nanosec_diff-- > 0){
+        time << 0.0;
+      };
+      time << nanosec_string;
 
       stringstream encoderSS;
-      encoderSS << timeString << " " << rev << " " << " " << steering;
+      encoderSS << time.str() << " " << rev << " " << " " << steering;
       auto encoderString = encoderSS.str();
 
       if(DEBUG){

@@ -34,7 +34,7 @@ bool DEBUG = false;
 
 const std::string rosbag_dir = "/home/marc/Workspace/Rosbag";
 const std::string measurement_folder = "rccar_26_09_18";
-const std::string rosbag_filename = "marc_6_full";
+const std::string rosbag_filename = "marc_1_full";
 const std::string color_dir = "color";
 const std::string color_rect_dir = "color_rect";
 const std::string depth_dir = "depth";
@@ -57,6 +57,8 @@ const std::string color_image_rectified_topic = "/camera/rgb/image_rect_color/co
 
 const std::string depth_image_topic = "/camera/depth/image_raw";
 const std::string depth_image_rectified_topic = "/camera/depth/image_rect";
+
+const int nano_sec_digits = 9;
 
 // http://wiki.ros.org/message_filters#Example_.28C.2B-.2B-.29-1
 typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::Image> MySyncPolicy;

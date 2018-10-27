@@ -131,7 +131,19 @@ int main(int argc, char** argv)
           cv::waitKey(1); // super important otherwise image wont be displayed
         }
         stringstream image_name;
-        image_name << rosbag_color_dir_str << "/" << ts.sec << "." << ts.nsec << "." << img_ext;
+        stringstream time;
+        stringstream nanosec;
+        time << ts.sec << ".";
+        nanosec << ts.nsec;
+        auto nanosec_string = nanosec.str();
+        auto nanosec_length = (int)nanosec_string.length();
+        auto nanosec_diff = nano_sec_digits - nanosec_length;
+        while (nanosec_diff-- > 0){
+          time << 0.0;
+        };
+        time << nanosec_string;
+        image_name << rosbag_color_dir_str << "/" << time.str() << "." << img_ext;
+
         auto image_name_str = image_name.str();
 
         cv::imwrite(image_name_str,view,compression_params);
@@ -154,7 +166,19 @@ int main(int argc, char** argv)
           cv::waitKey(1); // super important otherwise image wont be displayed
         }
         stringstream image_name;
-        image_name << rosbag_color_rect_dir_str << "/" << ts.sec << "." << ts.nsec << "." << img_ext;
+        stringstream time;
+        stringstream nanosec;
+        time << ts.sec << ".";
+        nanosec << ts.nsec;
+        auto nanosec_string = nanosec.str();
+        auto nanosec_length = (int)nanosec_string.length();
+        auto nanosec_diff = nano_sec_digits - nanosec_length;
+        while (nanosec_diff-- > 0){
+          time << 0.0;
+        };
+        time << nanosec_string;
+        image_name << rosbag_color_dir_str << "/" << time.str() << "." << img_ext;
+
         auto image_name_str = image_name.str();
 
         cv::imwrite(image_name_str,view,compression_params);
@@ -179,7 +203,18 @@ int main(int argc, char** argv)
         }
 
         stringstream image_name;
-        image_name << rosbag_depth_dir_str << "/" << ts.sec << "." << ts.nsec << "." << img_ext;
+        stringstream time;
+        stringstream nanosec;
+        time << ts.sec << ".";
+        nanosec << ts.nsec;
+        auto nanosec_string = nanosec.str();
+        auto nanosec_length = (int)nanosec_string.length();
+        auto nanosec_diff = nano_sec_digits - nanosec_length;
+        while (nanosec_diff-- > 0){
+          time << 0.0;
+        };
+        time << nanosec_string;
+        image_name << rosbag_color_dir_str << "/" << time.str() << "." << img_ext;
         auto image_name_str = image_name.str();
 
         cv::imwrite(image_name_str,view,compression_params);
@@ -205,7 +240,18 @@ int main(int argc, char** argv)
         }
 
         stringstream image_name;
-        image_name << rosbag_depth_rect_dir_str << "/" << ts.sec << "." << ts.nsec << "." << img_ext;
+        stringstream time;
+        stringstream nanosec;
+        time << ts.sec << ".";
+        nanosec << ts.nsec;
+        auto nanosec_string = nanosec.str();
+        auto nanosec_length = (int)nanosec_string.length();
+        auto nanosec_diff = nano_sec_digits - nanosec_length;
+        while (nanosec_diff-- > 0){
+          time << 0.0;
+        };
+        time << nanosec_string;
+        image_name << rosbag_color_dir_str << "/" << time.str() << "." << img_ext;
         auto image_name_str = image_name.str();
 
         cv::imwrite(image_name_str,view,compression_params);
