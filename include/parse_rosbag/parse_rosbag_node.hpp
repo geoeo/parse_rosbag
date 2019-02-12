@@ -33,12 +33,13 @@ struct stat sb; // for system checks i.e. does directory exist
 bool DEBUG = false;
 
 const std::string rosbag_dir = "/home/marc/Workspace/Rosbag";
-const std::string measurement_folder = "rccar_26_09_18";
-const std::string rosbag_filename = "marc_5_full";
+const std::string measurement_folder = "rccar_15_11_18";
+const std::string rosbag_filename = "marc_run_4_full";
 const std::string color_dir = "color";
 const std::string color_rect_dir = "color_rect";
 const std::string depth_dir = "depth";
 const std::string depth_rect_dir = "depth_rect";
+const std::string depth_rect_reg_dir = "depth_rect_reg";
 const std::string rosbag_ext = "bag";
 const std::string img_ext = "png";
 
@@ -46,17 +47,21 @@ std::stringstream rosbag_file_path;
 std::stringstream rosbag_file_dir;
 std::stringstream rosbag_depth_dir;
 std::stringstream rosbag_depth_rect_dir;
+std::stringstream rosbag_depth_rect_reg_dir;
 std::stringstream rosbag_color_dir;
 std::stringstream rosbag_color_rect_dir;
 
 // Image topics to load
 std::vector<std::string> topics;
 
-const std::string color_image_topic = "/camera/rgb/image_raw/compressed";
+//const std::string color_image_topic = "/camera/rgb/image_raw/compressed";
+const std::string color_image_topic = "/camera/rgb/image_color/compressed";
 const std::string color_image_rectified_topic = "/camera/rgb/image_rect_color/compressed";
 
-const std::string depth_image_topic = "/camera/depth/image_raw";
+//const std::string depth_image_topic = "/camera/depth/image_raw";
+const std::string depth_image_topic = "/camera/depth/image";
 const std::string depth_image_rectified_topic = "/camera/depth/image_rect";
+const std::string depth_image_registered_topic = "/camera/depth_registered/sw_registered/image_rect";
 
 const int nano_sec_digits = 9;
 

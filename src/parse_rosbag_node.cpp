@@ -44,6 +44,11 @@ int main(int argc, char** argv)
   auto rosbag_color_rect_dir_c_str = rosbag_color_rect_dir_str.c_str();
 
 
+  rosbag_depth_rect_reg_dir << rosbag_file_dir_str << "/" << depth_rect_reg_dir;
+  auto rosbag_depth_rect_reg_dir_str = rosbag_depth_rect_reg_dir.str();
+  auto rosbag_depth_rect_reg_dir_c_str = rosbag_depth_rect_reg_dir_str.c_str();
+
+
 
   // check if directory exists already
   if (!(stat(rosbag_file_dir_c_str, &sb) == 0 && S_ISDIR(sb.st_mode))){
@@ -65,6 +70,14 @@ int main(int argc, char** argv)
 
   if (!(stat(rosbag_depth_rect_dir_c_str, &sb) == 0 && S_ISDIR(sb.st_mode))){
     const int dir_err = mkdir(rosbag_depth_rect_dir_c_str, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    if (-1 == dir_err){
+      printf("Error creating directory!n");
+      return 1;
+    }
+  }
+
+  if (!(stat(rosbag_depth_rect_reg_dir_c_str, &sb) == 0 && S_ISDIR(sb.st_mode))){
+    const int dir_err = mkdir(rosbag_depth_rect_reg_dir_c_str, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     if (-1 == dir_err){
       printf("Error creating directory!n");
       return 1;
@@ -96,6 +109,7 @@ int main(int argc, char** argv)
   topics.push_back(color_image_rectified_topic);
   topics.push_back(depth_image_topic);
   topics.push_back(depth_image_rectified_topic);
+  topics.push_back(depth_image_registered_topic);
 
   rosbag::View view(bag, rosbag::TopicQuery(topics));
 
@@ -272,6 +286,48 @@ int main(int argc, char** argv)
         };
         time << nanosec_string;
         image_name << rosbag_depth_rect_dir_str << "/" << time.str() << "." << img_ext;
+        auto image_name_str = image_name.str();
+
+        cv::imwrite(image_name_str,view,compression_params);
+
+      }
+
+    }
+
+    if (topic == depth_image_registered_topic || ("/" + topic == depth_image_registered_topic))
+    {
+      sensor_msgs::ImageConstPtr img = m.instantiate<sensor_msgs::Image>();
+      if(img == NULL)
+        continue;
+      auto ts = img->header.stamp;
+      auto img_ptr = cv_bridge::toCvCopy(img,sensor_msgs::image_encodings::TYPE_16UC1);
+      cv::Mat view = img_ptr->image;
+      if(!view.empty()){
+        if(DEBUG){
+          cv::Mat view_norm;
+          cv::normalize( view , view_norm,0,255, NORM_MINMAX,CV_8UC1);
+          cv::imshow("depth rect", view_norm);
+          cv::waitKey(1); // super important otherwise image wont be displayed
+        }
+
+        stringstream image_name;
+        stringstream time;
+        stringstream seconds;
+        stringstream nanosec;
+
+        seconds << ts.sec;
+        auto seconds_string = seconds.str().erase(0,4);
+
+        time << seconds_string << ".";
+        nanosec << ts.nsec;
+        auto nanosec_string = nanosec.str();
+        auto nanosec_length = (int)nanosec_string.length();
+        auto nanosec_diff = nano_sec_digits - nanosec_length;
+        while (nanosec_diff-- > 0){
+          time << 0.0;
+        };
+        time << nanosec_string;
+        image_name << rosbag_depth_rect_reg_dir_str << "/" << time.str() << "." << img_ext;
         auto image_name_str = image_name.str();
 
         cv::imwrite(image_name_str,view,compression_params);

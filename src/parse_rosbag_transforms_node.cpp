@@ -21,6 +21,12 @@ int main(int argc, char** argv)
   rosbag_groundtruth_file_path << rosbag_groundtruth_dir_str << "/" << gt_file << "." << text_ext;
   auto rosbag_groundtruth_file_path_str = rosbag_groundtruth_file_path.str();
 
+  rosbag_groundtruth_opti_dir << rosbag_file_dir_str;
+  auto rosbag_groundtruth_file_opti_path = rosbag_groundtruth_opti_dir.str();
+
+  rosbag_groundtruth_opti_file_path << rosbag_groundtruth_file_opti_path << "/" << gt_opti_file << "." << text_ext;
+  auto rosbag_groundtruth_opti_file_path_str = rosbag_groundtruth_opti_file_path.str();
+
   rosbag_encoder_dir << rosbag_file_dir_str;
   auto rosbag_encoder_dir_str = rosbag_encoder_dir.str();
 
@@ -39,6 +45,7 @@ int main(int argc, char** argv)
 
 
   groundtruth_filestream.open(rosbag_groundtruth_file_path_str);
+  groundtruth_opti_filestream.open(rosbag_groundtruth_opti_file_path_str);
   encoder_filestream.open(rosbag_encoder_file_path_str);
 
 
@@ -47,8 +54,9 @@ int main(int argc, char** argv)
   rosbag::Bag bag;
   bag.open(rosbag_file_path_str, rosbag::bagmode::Read);
 
-  topics.push_back(rccar_pose_topic);
-  topics.push_back(encoder_topic);
+  //topics.push_back(rccar_pose_topic);
+  //topics.push_back(encoder_topic);
+  topics.push_back(rccar_pose_topic_optitrack);
 
   rosbag::View view(bag, rosbag::TopicQuery(topics));
 
@@ -67,8 +75,6 @@ int main(int argc, char** argv)
       auto pose = posePtr->pose;
       auto position = pose.position;
       auto quat = pose.orientation;
-
-
 
 
       stringstream time;
@@ -107,6 +113,56 @@ int main(int argc, char** argv)
       }
 
       groundtruth_filestream << measurementString << "\n";
+
+    }
+
+    if (topic == rccar_pose_topic_optitrack || ("/" + topic == rccar_pose_topic_optitrack))
+    {
+      geometry_msgs::PoseStampedConstPtr posePtr = m.instantiate<geometry_msgs::PoseStamped>();
+      if(posePtr == NULL)
+        continue;
+      auto ts = posePtr->header.stamp;
+      auto pose = posePtr->pose;
+      auto position = pose.position;
+      auto quat = pose.orientation;
+
+
+      stringstream time;
+      stringstream seconds;
+      stringstream nanosec;
+
+      seconds << ts.sec;
+      auto seconds_string = seconds.str().erase(0,4);
+
+      time << seconds_string << ".";
+      nanosec << ts.nsec;
+      auto nanosec_string = nanosec.str();
+      auto nanosec_length = (int)nanosec_string.length();
+      auto nanosec_diff = nano_sec_digits - nanosec_length;
+      while (nanosec_diff-- > 0){
+        time << 0.0;
+      };
+      time << nanosec_string;
+
+      stringstream positionSS;
+      stringstream quaternionSS;
+      stringstream measurementSS;
+
+      positionSS << position.x << " " << position.y << " " << position.z;
+      quaternionSS << quat.x << " " << quat.y << " " << quat.z << " " << quat.w;
+
+      auto timeString = time.str();
+      auto positionString = positionSS.str();
+      auto quaternionString = quaternionSS.str();
+
+      measurementSS << timeString << " " << positionString << " " << quaternionString;
+      auto measurementString = measurementSS.str();
+
+      if(DEBUG){
+        cout << measurementString << "\n";
+      }
+
+      groundtruth_opti_filestream << measurementString << "\n";
 
     }
 
